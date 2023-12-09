@@ -13,7 +13,7 @@ class CreateThingScreen extends ConsumerStatefulWidget {
 class _CreateThingScreenState extends ConsumerState<CreateThingScreen> {
   Color _selectedColor = Colors.red;
 
-  String _selectedFrequency = "Daily";
+  KFrequency _selectedFrequency = KFrequency.daily;
 
   String _enteredTitle = '';
 
@@ -26,7 +26,7 @@ class _CreateThingScreenState extends ConsumerState<CreateThingScreen> {
   final _formKey = GlobalKey<FormState>();
 
   void _createThing() {
-    if (_formKey.currentState!.validate() == false) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
     _formKey.currentState!.save();
@@ -40,7 +40,8 @@ class _CreateThingScreenState extends ConsumerState<CreateThingScreen> {
             maxRating: _maxRating,
             minRating: _minRating,
             notifications: _sendNotifications,
-            notificationFrequency: _selectedFrequency,
+            notificationFrequency:
+                _sendNotifications ? _selectedFrequency : KFrequency.none,
           ),
         );
     Navigator.of(context).pop();
@@ -186,16 +187,19 @@ class _CreateThingScreenState extends ConsumerState<CreateThingScreen> {
                 // notification frequency
                 if (_sendNotifications)
                   Expanded(
-                    child: DropdownButtonFormField<String>(
+                    child: DropdownButtonFormField<KFrequency>(
                       value: _selectedFrequency,
                       onChanged: (value) {
                         setState(() => _selectedFrequency = value!);
                       },
-                      items: kFrequencies
+                      items: KFrequency.values
+                          .where((element) => element != KFrequency.none)
                           .map(
                             (e) => DropdownMenuItem(
                               value: e,
-                              child: Text(e),
+                              child: Text(
+                                e.name[0].toUpperCase() + e.name.substring(1),
+                              ),
                             ),
                           )
                           .toList(),

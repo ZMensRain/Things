@@ -31,19 +31,25 @@ class ThingsScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        itemCount: things.length,
-        itemBuilder: (context, index) => ThingCard(
-          things[index],
-          onTaped: () {
-            ref.read(ratingsProvider(things[index]).notifier).loadRatingsSQL();
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ThingDetailScreen(things[index]),
-            ));
-          },
-        ),
-      ),
+      body: things.isEmpty
+          ? const Center(
+              child: Text("No Things yet..."),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              itemCount: things.length,
+              itemBuilder: (context, index) => ThingCard(
+                things[index],
+                onTaped: () {
+                  ref
+                      .read(ratingsProvider(things[index]).notifier)
+                      .loadRatingsSQL();
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ThingDetailScreen(things[index]),
+                  ));
+                },
+              ),
+            ),
     );
   }
 }

@@ -14,12 +14,20 @@ final List<Color> kColors = [
   Colors.pink,
 ];
 
-final List<String> kFrequencies = [
-  "Daily",
-  "Yearly",
-  "Weekly",
-  "Monthly",
-];
+enum KFrequency {
+  daily,
+  yearly,
+  weekly,
+  monthly,
+  none,
+}
+
+// final List<String> kFrequencies = [
+//   "Daily",
+//   "Yearly",
+//   "Weekly",
+//   "Monthly",
+// ];
 
 class Thing {
   Thing(
@@ -28,7 +36,7 @@ class Thing {
     this.maxRating = 10,
     this.ratingIncrement = 0.1,
     this.notifications = false,
-    this.notificationFrequency = "",
+    this.notificationFrequency = KFrequency.none,
     required this.average,
     required this.lastTimeRated,
     required this.color,
@@ -43,7 +51,7 @@ class Thing {
 
   final bool notifications;
 
-  final String notificationFrequency;
+  final KFrequency notificationFrequency;
 
   final String id;
   final double? average;
@@ -56,7 +64,7 @@ class Thing {
     double? ratingIncrement,
     String? title,
     bool? notifications,
-    String? notificationFrequency,
+    KFrequency? notificationFrequency,
     String? id,
     double? average,
     DateTime? lastTimeRated,
@@ -75,6 +83,21 @@ class Thing {
       notifications: notifications ?? this.notifications,
       ratingIncrement: ratingIncrement ?? this.ratingIncrement,
     );
+  }
+}
+
+KFrequency frequencyFromString(String string) {
+  switch (string) {
+    case "daliy":
+      return KFrequency.daily;
+    case "yearly":
+      return KFrequency.yearly;
+    case "weekly":
+      return KFrequency.weekly;
+    case "monthly":
+      return KFrequency.monthly;
+    default:
+      return KFrequency.none;
   }
 }
 

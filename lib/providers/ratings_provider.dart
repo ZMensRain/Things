@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rate_a_thing/main.dart';
 import 'package:rate_a_thing/models/rating.dart';
 import 'package:rate_a_thing/models/thing.dart';
 import 'package:rate_a_thing/providers/thing_provider.dart';
@@ -10,11 +9,15 @@ import 'package:sqflite/sqlite_api.dart';
 class RatingsNotifer extends StateNotifier<List<Rating>> {
   RatingsNotifer(this.thing, this.ref) : super([]);
 
+  Database? _database;
+
   final Thing thing;
   final Ref ref;
   void loadRatingsSQL() async {
-    var db = await _getDataBase();
-    var data = await db.query("'${thing.id}'");
+    if (_database == null || !_database!.isOpen) {
+      await _openDatabase();
+    }
+    var data = await _database!.query("'${thing.id}'");
 
     final convertedData = data.map((row) {
       return Rating(DateTime.fromMillisecondsSinceEpoch(row["dateTime"] as int),
@@ -22,11 +25,10 @@ class RatingsNotifer extends StateNotifier<List<Rating>> {
           id: row["id"] as String);
     }).toList();
 
-    db.close();
     state = convertedData;
   }
 
-  Future<Database> _getDataBase() async {
+  Future<void> _openDatabase() async {
     var dbpath = await sql.getDatabasesPath();
 
     final db = await sql.openDatabase(
@@ -40,12 +42,14 @@ class RatingsNotifer extends StateNotifier<List<Rating>> {
       readOnly: false,
     );
 
-    return db;
+    _database = db;
   }
 
   void addRating(Rating rating) async {
-    var database = await _getDataBase();
-    await database.insert(
+    if (_database == null || !_database!.isOpen) {
+      await _openDatabase();
+    }
+    await _database!.insert(
       "'${thing.id}'",
       {
         "id": rating.id,
@@ -58,8 +62,11 @@ class RatingsNotifer extends StateNotifier<List<Rating>> {
   }
 
   void removeRating(Rating rating) async {
-    var database = await _getDataBase();
-    await database.execute("DELETE FROM '${thing.id}' WHERE id='${rating.id}'");
+    if (_database == null || !_database!.isOpen) {
+      await _openDatabase();
+    }
+    await _database!
+        .execute("DELETE FROM '${thing.id}' WHERE id='${rating.id}'");
     state = state.where((r) => r.id != rating.id).toList();
   }
 

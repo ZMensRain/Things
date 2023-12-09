@@ -3,34 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rate_a_thing/providers/thing_provider.dart';
 import 'package:rate_a_thing/screens/things_screen.dart';
-import 'package:sqflite/sqflite.dart' as sql;
-import 'package:path/path.dart' as path;
-import 'package:sqflite/sqlite_api.dart';
 
-late Database kDatebase;
-
-void _openDatabase() async {
-  var dbpath = await sql.getDatabasesPath();
-  final db = await sql.openDatabase(
-    path.join(dbpath, "things.db"),
-    onCreate: (db, version) {
-      db.execute(
-        "CREATE TABLE things(id TEXT PRIMARY KEY,title TEXT, notificationFrequency BIGINT, maxRating REAL,minRating REAL, notifications INTEGER,ratingIncrement REAl, average REAL, lastTimeRated BIGINT, color INTEGER)",
-      );
-    },
-    version: 1,
-    readOnly: false,
-  );
-  kDatebase = db;
-}
-
-void main() {
+void main() async {
   runApp(
     const ProviderScope(
       child: MainApp(),
     ),
   );
-  _openDatabase();
 }
 
 class MainApp extends ConsumerWidget {

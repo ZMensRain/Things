@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rate_a_thing/models/thing.dart';
+import 'package:rate_a_thing/providers/ratings_provider.dart';
 import 'package:rate_a_thing/providers/thing_provider.dart';
 import 'package:rate_a_thing/screens/thing_detail_screen.dart';
 import 'package:rate_a_thing/widgets/delete_thing.dart';
@@ -15,7 +16,7 @@ class EditThingScreen extends ConsumerStatefulWidget {
 class _EditThingScreenState extends ConsumerState<EditThingScreen> {
   Color _selectedColor = Colors.red;
 
-  String _selectedFrequency = "Daily";
+  KFrequency _selectedFrequency = KFrequency.daily;
 
   String _enteredTitle = '';
 
@@ -43,7 +44,8 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
     final thing = widget.thing.copyWith(
       color: _selectedColor,
       title: _enteredTitle,
-      notificationFrequency: _selectedFrequency,
+      notificationFrequency:
+          _sendNotifications ? _selectedFrequency : KFrequency.none,
       notifications: _sendNotifications,
       maxRating: _maxRating,
       minRating: _minRating,
@@ -54,6 +56,7 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
         );
     Navigator.of(context).pop();
     Navigator.of(context).pop();
+    ref.read(ratingsProvider(thing).notifier).loadRatingsSQL();
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => ThingDetailScreen(thing),
     ));
@@ -176,17 +179,22 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
                   child: Row(
                     children: [
                       Checkbox(
-                        value: _sendNotifications,
-                        onChanged: (value) =>
-                            setState(() => _sendNotifications = value!),
-                      ),
+                          value: _sendNotifications,
+                          onChanged: (value) {
+                            _selectedFrequency =
+                                _selectedFrequency == KFrequency.none
+                                    ? KFrequency.daily
+                                    : _selectedFrequency;
+
+                            setState(() => _sendNotifications = value!);
+                          }),
                       const Text("Send Notifications"),
                     ],
                   ),
                 ),
                 if (_sendNotifications)
                   Expanded(
-                    child: DropdownButtonFormField<String>(
+                    child: DropdownButtonFormField<KFrequency>(
                       value: _selectedFrequency,
                       onChanged: (value) {
                         if (value == null) {
@@ -194,11 +202,14 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
                         }
                         setState(() => _selectedFrequency = value);
                       },
-                      items: kFrequencies
+                      items: KFrequency.values
+                          .where((element) => element != KFrequency.none)
                           .map(
                             (e) => DropdownMenuItem(
                               value: e,
-                              child: Text(e),
+                              child: Text(
+                                e.name[0].toUpperCase() + e.name.substring(1),
+                              ),
                             ),
                           )
                           .toList(),
