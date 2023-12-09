@@ -121,6 +121,12 @@ class _CreateThingScreenState extends ConsumerState<CreateThingScreen> {
                             if (double.parse(value) < 0) {
                               return "Number must be >= 0";
                             }
+                            if (double.parse(value) > 100000) {
+                              return "number can't be bigger than 100,000";
+                            }
+                            if (double.parse(value) > _maxRating) {
+                              return "The min rating must be lower than the max";
+                            }
                             return null;
                           },
                           initialValue: "0",
@@ -133,6 +139,7 @@ class _CreateThingScreenState extends ConsumerState<CreateThingScreen> {
                             if (double.tryParse(value) == null) {
                               return;
                             }
+
                             _minRating = double.parse(value);
                           },
                         ),
@@ -147,6 +154,12 @@ class _CreateThingScreenState extends ConsumerState<CreateThingScreen> {
                             }
                             if (double.parse(value) < 0) {
                               return "Number must be >= 0";
+                            }
+                            if (double.parse(value) > 100000) {
+                              return "number can't be bigger than 100,000";
+                            }
+                            if (double.parse(value) < _minRating) {
+                              return "The max rating must be bigger than the min";
                             }
                             return null;
                           },

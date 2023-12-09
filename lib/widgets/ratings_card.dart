@@ -8,10 +8,16 @@ class RatingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(rating.value.toString()),
+      title: Text(
+        rating.value.toString(),
+        style: Theme.of(context).textTheme.headlineSmall,
+      ),
       subtitle: Text(
         formatDate(rating.time, [dd, " ", MM, " ", yyyy]),
-        style: const TextStyle().copyWith(color: Colors.white.withOpacity(0.5)),
+        style: Theme.of(context)
+            .textTheme
+            .bodyLarge!
+            .copyWith(color: Colors.white.withOpacity(0.5)),
       ),
     );
   }

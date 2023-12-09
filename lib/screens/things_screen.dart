@@ -32,8 +32,11 @@ class ThingsScreen extends ConsumerWidget {
         ],
       ),
       body: things.isEmpty
-          ? const Center(
-              child: Text("No Things yet..."),
+          ? Center(
+              child: Text(
+                "No Things yet...",
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
             )
           : ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 8),

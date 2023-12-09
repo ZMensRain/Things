@@ -6,6 +6,21 @@ import 'package:sqflite/sqflite.dart' as sql;
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqlite_api.dart';
 
+enum Months {
+  january,
+  february,
+  march,
+  april,
+  may,
+  june,
+  july,
+  august,
+  september,
+  october,
+  november,
+  december,
+}
+
 class RatingsNotifer extends StateNotifier<List<Rating>> {
   RatingsNotifer(this.thing, this.ref) : super([]);
 
@@ -85,6 +100,25 @@ class RatingsNotifer extends StateNotifier<List<Rating>> {
                 .toStringAsFixed(2)),
           ),
         );
+  }
+
+  double? monthAverage(Months month) {
+    var items = state.where(
+        (element) => element.time.month == Months.values.indexOf(month) + 1);
+    if (items.isEmpty) {
+      return null;
+    }
+    var average = items.fold(
+            0.0, (previousValue, element) => previousValue + element.value) /
+        items.length;
+    return average;
+  }
+
+  int monthRatings(Months month) {
+    return state
+        .where(
+            (element) => element.time.month == Months.values.indexOf(month) + 1)
+        .length;
   }
 }
 

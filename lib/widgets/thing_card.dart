@@ -46,11 +46,12 @@ class ThingCard extends StatelessWidget {
                 ),
               ),
               Text(
-                "${thing.average ?? ""}",
+                "${thing.average ?? ""}".replaceAll(".00", ""),
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
                       color: Colors.white.withOpacity(0.99),
                     ),
               ),
+              const SizedBox(width: 5),
             ],
           ),
         ),

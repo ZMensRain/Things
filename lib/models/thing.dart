@@ -105,7 +105,7 @@ String? titleValidator(String? value) {
   if (value == null ||
       value.isEmpty ||
       value.trim().length <= 1 ||
-      value.trim().length > 50) {
+      value.trim().length > 26) {
     return "Must be between 1 and 50 characters.";
   }
   return null;

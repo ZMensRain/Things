@@ -105,8 +105,8 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
                             value: c.value,
                             child: Container(
                               color: c,
-                              width: 32,
-                              height: 32,
+                              width: 16,
+                              height: 16,
                             ),
                           ),
                         )
@@ -114,65 +114,6 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
                     onChanged: (value) {
                       setState(() => _selectedColor = Color(value!));
                     },
-                  ),
-                ),
-
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          validator: (value) {
-                            if (value == null ||
-                                double.tryParse(value) == null ||
-                                double.parse(value) < 0) {
-                              return "A number has to be entred and greater than 0";
-                            }
-                            return null;
-                          },
-                          initialValue: widget.thing.minRating.toString(),
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration().copyWith(
-                            hintText: "0",
-                            label: const Text("Min Rating"),
-                          ),
-                          onChanged: (value) {
-                            if (double.tryParse(value) == null) {
-                              return;
-                            }
-                            _minRating = double.parse(value);
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: TextFormField(
-                          validator: (value) {
-                            if (value == null ||
-                                double.tryParse(value) == null) {
-                              return "A number has to be entred";
-                            }
-                            if (double.parse(value) < 0) {
-                              return "Number must be >= 0";
-                            }
-                            return null;
-                          },
-                          initialValue: widget.thing.maxRating.toString(),
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration().copyWith(
-                            hintText: "10",
-                            label: const Text("Max Rating"),
-                          ),
-                          onChanged: (value) {
-                            if (double.tryParse(value) == null) {
-                              return;
-                            }
-                            _maxRating = double.parse(value);
-                          },
-                        ),
-                      ),
-                    ],
                   ),
                 ),
                 Expanded(
@@ -234,6 +175,9 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
                         .copyWith(color: Theme.of(context).colorScheme.error),
                   ),
                 ),
+                Spacer(
+                  flex: 4,
+                )
               ],
             ),
           ),

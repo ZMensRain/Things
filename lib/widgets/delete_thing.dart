@@ -12,7 +12,11 @@ class DeleteThingDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text("Cancel"),
+          child: Text(
+            "Cancel",
+            style: const TextStyle()
+                .copyWith(color: Theme.of(context).colorScheme.primary),
+          ),
         ),
         TextButton(
           onPressed: onDeleteTaped,
