@@ -34,8 +34,9 @@ class ThingsScreen extends ConsumerWidget {
       body: things.isEmpty
           ? Center(
               child: Text(
-                "No Things yet...",
+                "Nothing here yet...",
                 style: Theme.of(context).textTheme.headlineMedium,
+                textAlign: TextAlign.center,
               ),
             )
           : ListView.builder(

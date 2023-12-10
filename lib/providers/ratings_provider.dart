@@ -97,7 +97,7 @@ class RatingsNotifer extends StateNotifier<List<Rating>> {
                       (previousValue, element) => previousValue + element.value,
                     ) /
                     state.length)
-                .toStringAsFixed(2)),
+                .toStringAsFixed(1)),
           ),
         );
   }

@@ -14,10 +14,8 @@ class RatingCard extends StatelessWidget {
       ),
       subtitle: Text(
         formatDate(rating.time, [dd, " ", MM, " ", yyyy]),
-        style: Theme.of(context)
-            .textTheme
-            .bodyLarge!
-            .copyWith(color: Colors.white.withOpacity(0.5)),
+        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.6)),
       ),
     );
   }

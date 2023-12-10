@@ -31,6 +31,7 @@ class MonthCard extends StatelessWidget {
                         ),
                     textAlign: TextAlign.left,
                   ),
+                  const SizedBox(height: 4),
                   Text(
                     numberOfRatings.toString(),
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(

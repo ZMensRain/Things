@@ -218,13 +218,7 @@ class _CreateThingScreenState extends ConsumerState<CreateThingScreen> {
                           .toList(),
                     ),
                   ),
-
-                // Create thing button
-                ElevatedButton.icon(
-                  onPressed: _createThing,
-                  icon: const Icon(Icons.add),
-                  label: const Text("Create"),
-                ),
+                const Spacer(flex: 3)
               ],
             ),
           ),

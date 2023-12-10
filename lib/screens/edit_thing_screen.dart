@@ -22,10 +22,6 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
 
   bool _sendNotifications = false;
 
-  double _minRating = 0;
-
-  double _maxRating = 10;
-
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -47,8 +43,6 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
       notificationFrequency:
           _sendNotifications ? _selectedFrequency : KFrequency.none,
       notifications: _sendNotifications,
-      maxRating: _maxRating,
-      minRating: _minRating,
     );
     ref.read(thingsProvider.notifier).editAThing(
           widget.thing,
@@ -175,9 +169,7 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
                         .copyWith(color: Theme.of(context).colorScheme.error),
                   ),
                 ),
-                Spacer(
-                  flex: 4,
-                )
+                const Spacer(flex: 4),
               ],
             ),
           ),

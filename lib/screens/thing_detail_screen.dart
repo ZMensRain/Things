@@ -64,7 +64,6 @@ class _ThingDetailScreenState extends ConsumerState<ThingDetailScreen> {
           max: widget.thing.maxRating,
           onRate: rate,
         ),
-        // const Divider(),
         Expanded(
           child: RatingsList(
             controller: c,
@@ -73,6 +72,19 @@ class _ThingDetailScreenState extends ConsumerState<ThingDetailScreen> {
               ref
                   .read(ratingsProvider(widget.thing).notifier)
                   .removeRating(rating);
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text("Rating removed"),
+                  action: SnackBarAction(
+                      label: "undo",
+                      onPressed: () {
+                        ref
+                            .read(ratingsProvider(widget.thing).notifier)
+                            .addRating(rating);
+                      }),
+                ),
+              );
             },
           ),
         ),
@@ -85,21 +97,32 @@ class _ThingDetailScreenState extends ConsumerState<ThingDetailScreen> {
       var mon = getMonths(ratings);
       mon.removeWhere((key, value) => value == false);
       var a = mon.keys;
-      content = Column(
-          children: a
-              .map(
-                (e) => MonthCard(
-                  month: e.name[0].toUpperCase() + e.name.substring(1),
-                  numberOfRatings: ref
-                      .read(ratingsProvider(widget.thing).notifier)
-                      .monthRatings(e),
-                  average: ref
-                          .read(ratingsProvider(widget.thing).notifier)
-                          .monthAverage(e) ??
-                      0,
-                ),
-              )
-              .toList());
+      content = Column(children: [
+        const SizedBox(height: 10),
+        Text(
+          "Average by Month",
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        ...a
+            .map(
+              (e) => MonthCard(
+                month: e.name[0].toUpperCase() + e.name.substring(1),
+                numberOfRatings: ref
+                    .read(ratingsProvider(widget.thing).notifier)
+                    .monthRatings(e),
+                average: ref
+                        .read(ratingsProvider(widget.thing).notifier)
+                        .monthAverage(e) ??
+                    0,
+              ),
+            )
+            .toList()
+      ]);
+      if (a.isEmpty) {
+        content = const Center(
+          child: Text("Stats only show if you have rated this Thing."),
+        );
+      }
     }
 
     return Scaffold(
