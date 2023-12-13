@@ -1,3 +1,3 @@
-# rate_a_thing
+# Things
 
-A new Flutter project.
+A Flutter project for my portfolio.
