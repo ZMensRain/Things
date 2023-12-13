@@ -100,7 +100,7 @@ class Thing {
 
 KFrequency frequencyFromString(String string) {
   switch (string) {
-    case "daliy":
+    case "daily":
       return KFrequency.daily;
     case "yearly":
       return KFrequency.yearly;
