@@ -52,7 +52,6 @@ class Thing {
     DateTime? lastTimeRated,
     Color? color,
   }) {
-    _uuid.v4();
     return Thing(
       title ?? this.title,
       average: average ?? this.average,
