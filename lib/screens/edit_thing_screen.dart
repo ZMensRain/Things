@@ -4,7 +4,7 @@ import 'package:rate_a_thing/models/thing.dart';
 import 'package:rate_a_thing/providers/ratings_provider.dart';
 import 'package:rate_a_thing/providers/thing_provider.dart';
 import 'package:rate_a_thing/screens/thing_detail_screen.dart';
-import 'package:rate_a_thing/widgets/delete_thing.dart';
+import 'package:rate_a_thing/widgets/delete_thing_dialog.dart';
 
 class EditThingScreen extends ConsumerStatefulWidget {
   const EditThingScreen(this.thing, {super.key});
