@@ -11,7 +11,13 @@ class RateCard extends StatefulWidget {
 }
 
 class _RateCardState extends State<RateCard> {
-  double rating = 0.0;
+  double rating = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    rating = widget.min;
+  }
 
   @override
   Widget build(BuildContext context) {
