@@ -34,13 +34,11 @@ class RatingsNotifer extends StateNotifier<List<Rating>> {
     }
     var data = await _database!.query("'${thing.id}'");
 
-    final convertedData = data.map((row) {
-      return Rating(DateTime.fromMillisecondsSinceEpoch(row["dateTime"] as int),
-          row["rating"] as double,
-          id: row["id"] as String);
-    }).toList();
-
-    state = convertedData;
+    state = data
+        .map(
+          (row) => Rating.from(row),
+        )
+        .toList();
   }
 
   Future<void> _openDatabase() async {

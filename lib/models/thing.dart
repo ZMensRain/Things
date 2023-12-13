@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
-var uuid = const Uuid();
+const _uuid = Uuid();
 
 final List<Color> kColors = [
   Colors.red,
@@ -34,19 +34,60 @@ class Thing {
     this.title, {
     this.minRating = 0,
     this.maxRating = 10,
-    this.ratingIncrement = 0.1,
     this.notifications = false,
     this.notificationFrequency = KFrequency.none,
     required this.average,
     required this.lastTimeRated,
     required this.color,
     String? id,
-  }) : id = id ?? uuid.v4();
+  }) : id = id ?? _uuid.v4();
+
+  Thing copyWith({
+    double? maxRating,
+    double? minRating,
+    double? ratingIncrement,
+    String? title,
+    bool? notifications,
+    KFrequency? notificationFrequency,
+    double? average,
+    DateTime? lastTimeRated,
+    Color? color,
+  }) {
+    _uuid.v4();
+    return Thing(
+      title ?? this.title,
+      average: average ?? this.average,
+      lastTimeRated: lastTimeRated ?? this.lastTimeRated,
+      color: color ?? this.color,
+      id: id,
+      maxRating: maxRating ?? this.maxRating,
+      minRating: minRating ?? this.minRating,
+      notificationFrequency:
+          notificationFrequency ?? this.notificationFrequency,
+      notifications: notifications ?? this.notifications,
+    );
+  }
+
+  Thing.from(Map<String, Object?> row)
+      : maxRating = row["maxRating"] as double,
+        minRating = row["minRating"] as double,
+        average = row["average"] as double?,
+        id = row["id"] as String,
+        lastTimeRated = row["lastTimeRated"] == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(row["lastTimeRated"] as int),
+        color = Color(row["color"] as int),
+        title = row["title"] as String,
+        notificationFrequency =
+            frequencyFromString(row["notificationFrequency"] as String),
+        notifications = row["notifications"] != null
+            ? row["notifications"] as int != 0
+            : false;
+
   final double maxRating;
 
   final double minRating;
 
-  final double ratingIncrement;
   final String title;
 
   final bool notifications;
@@ -57,33 +98,6 @@ class Thing {
   final double? average;
   final DateTime? lastTimeRated;
   final Color color;
-
-  Thing copyWith({
-    double? maxRating,
-    double? minRating,
-    double? ratingIncrement,
-    String? title,
-    bool? notifications,
-    KFrequency? notificationFrequency,
-    String? id,
-    double? average,
-    DateTime? lastTimeRated,
-    Color? color,
-  }) {
-    return Thing(
-      title ?? this.title,
-      average: average ?? this.average,
-      lastTimeRated: lastTimeRated ?? this.lastTimeRated,
-      color: color ?? this.color,
-      id: this.id,
-      maxRating: maxRating ?? this.maxRating,
-      minRating: minRating ?? this.minRating,
-      notificationFrequency:
-          notificationFrequency ?? this.notificationFrequency,
-      notifications: notifications ?? this.notifications,
-      ratingIncrement: ratingIncrement ?? this.ratingIncrement,
-    );
-  }
 }
 
 KFrequency frequencyFromString(String string) {

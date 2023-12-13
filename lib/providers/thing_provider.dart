@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rate_a_thing/models/thing.dart';
 import 'package:sqflite/sqflite.dart' as sql;
@@ -33,25 +32,7 @@ class ThingsNotifer extends StateNotifier<List<Thing>> {
     }
 
     var data = await _database!.query("things");
-    var d = data.map(
-      (row) => Thing(
-        row["title"] as String,
-        id: row["id"] as String,
-        maxRating: row["maxRating"] as double,
-        minRating: row["minRating"] as double,
-        notifications: row["notifications"] != null
-            ? row["notifications"] as int != 0
-            : false,
-        ratingIncrement: row["ratingIncrement"] as double,
-        notificationFrequency:
-            frequencyFromString(row["notificationFrequency"] as String),
-        average: row["average"] as double?,
-        lastTimeRated: row["lastTimeRated"] == null
-            ? null
-            : DateTime.fromMillisecondsSinceEpoch(row["lastTimeRated"] as int),
-        color: Color(row["color"] as int),
-      ),
-    );
+    var d = data.map((row) => Thing.from(row));
     state = d.toList();
   }
 
@@ -75,7 +56,6 @@ class ThingsNotifer extends StateNotifier<List<Thing>> {
         "maxRating": newThing.maxRating,
         "minRating": newThing.minRating,
         "notifications": newThing.notifications ? 1 : 0,
-        "ratingIncrement": newThing.ratingIncrement,
         "color": newThing.color.value,
       },
     );
@@ -103,7 +83,7 @@ class ThingsNotifer extends StateNotifier<List<Thing>> {
       await _openDatabase();
     }
     await _database!.execute(
-      "UPDATE things SET title='${neu.title}', notificationFrequency='${neu.notificationFrequency.name}', maxRating= ${neu.maxRating}, minRating=${neu.minRating}, notifications= ${neu.notifications ? 1 : 0},ratingIncrement= ${neu.ratingIncrement}, average=${neu.average}, ${neu.lastTimeRated != null ? "lastTimeRated=${neu.lastTimeRated!.millisecondsSinceEpoch}," : ""} color=${neu.color.value} WHERE id='${old.id}'",
+      "UPDATE things SET title='${neu.title}', notificationFrequency='${neu.notificationFrequency.name}', maxRating= ${neu.maxRating}, minRating=${neu.minRating}, notifications= ${neu.notifications ? 1 : 0}, average=${neu.average}, ${neu.lastTimeRated != null ? "lastTimeRated=${neu.lastTimeRated!.millisecondsSinceEpoch}," : ""} color=${neu.color.value} WHERE id='${old.id}'",
     );
     var i = state.indexWhere((element) => element.id == old.id);
     if (i + 1 == state.length) {

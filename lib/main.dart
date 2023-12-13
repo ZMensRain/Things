@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:rate_a_thing/providers/thing_provider.dart';
 import 'package:rate_a_thing/screens/things_screen.dart';
+import 'package:rate_a_thing/services/notification_service.dart';
+
+final service = LocalNotificationService();
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await service.init();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(
     const ProviderScope(
       child: MainApp(),
@@ -17,10 +27,6 @@ class MainApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
     ref.read(thingsProvider.notifier).loadThingsFromSQL();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
