@@ -165,7 +165,6 @@ class _ThingFormState extends State<ThingForm> {
                   setState(() => _selectedFrequency = value!);
                 },
                 items: KFrequency.values
-                    .where((element) => element != KFrequency.none)
                     .map(
                       (e) => DropdownMenuItem(
                         value: e,

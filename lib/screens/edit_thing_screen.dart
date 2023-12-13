@@ -40,8 +40,7 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
     final thing = widget.thing.copyWith(
       color: _selectedColor,
       title: _enteredTitle,
-      notificationFrequency:
-          _sendNotifications ? _selectedFrequency : KFrequency.none,
+      notificationFrequency: _selectedFrequency,
       notifications: _sendNotifications,
     );
     ref.read(thingsProvider.notifier).editAThing(
@@ -110,17 +109,14 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
                     },
                   ),
                 ),
+
+                // Notification frequency selector
                 Expanded(
                   child: Row(
                     children: [
                       Checkbox(
                           value: _sendNotifications,
                           onChanged: (value) {
-                            _selectedFrequency =
-                                _selectedFrequency == KFrequency.none
-                                    ? KFrequency.daily
-                                    : _selectedFrequency;
-
                             setState(() => _sendNotifications = value!);
                           }),
                       const Text("Send Notifications"),
@@ -138,7 +134,6 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
                         setState(() => _selectedFrequency = value);
                       },
                       items: KFrequency.values
-                          .where((element) => element != KFrequency.none)
                           .map(
                             (e) => DropdownMenuItem(
                               value: e,

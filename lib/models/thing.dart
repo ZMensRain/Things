@@ -19,7 +19,6 @@ enum KFrequency {
   yearly,
   weekly,
   monthly,
-  none,
 }
 
 // final List<String> kFrequencies = [
@@ -35,7 +34,7 @@ class Thing {
     this.minRating = 0,
     this.maxRating = 10,
     this.notifications = false,
-    this.notificationFrequency = KFrequency.none,
+    this.notificationFrequency = KFrequency.daily,
     required this.average,
     required this.lastTimeRated,
     required this.color,
@@ -111,7 +110,7 @@ KFrequency frequencyFromString(String string) {
     case "monthly":
       return KFrequency.monthly;
     default:
-      return KFrequency.none;
+      return KFrequency.daily;
   }
 }
 

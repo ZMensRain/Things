@@ -40,8 +40,7 @@ class _CreateThingScreenState extends ConsumerState<CreateThingScreen> {
             maxRating: _maxRating,
             minRating: _minRating,
             notifications: _sendNotifications,
-            notificationFrequency:
-                _sendNotifications ? _selectedFrequency : KFrequency.none,
+            notificationFrequency: _selectedFrequency,
           ),
         );
     Navigator.of(context).pop();
@@ -206,7 +205,6 @@ class _CreateThingScreenState extends ConsumerState<CreateThingScreen> {
                         setState(() => _selectedFrequency = value!);
                       },
                       items: KFrequency.values
-                          .where((element) => element != KFrequency.none)
                           .map(
                             (e) => DropdownMenuItem(
                               value: e,
