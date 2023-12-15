@@ -3,21 +3,27 @@ import 'package:rate_a_thing/models/rating.dart';
 
 import 'package:rate_a_thing/widgets/ratings_card.dart';
 
+/// displays the ratings given to a [Thing]
+/// or the message No ratings yet... if there are no [Rating]s
 class RatingsList extends StatelessWidget {
-  const RatingsList(this.ratings, this.onDismissed,
-      {super.key, required this.controller});
+  const RatingsList({
+    required this.ratings,
+    required this.onDismissed,
+    required this.controller,
+    super.key,
+  });
+
   final List<Rating> ratings;
   final ScrollController controller;
   final void Function(Rating rating) onDismissed;
 
   @override
   Widget build(BuildContext context) {
-    var re = ratings;
+    var reversedRatings = ratings;
 
-    re.sort(
-      (a, b) => a.time.compareTo(b.time),
-    );
-    re = re.reversed.toList();
+    reversedRatings.sort((a, b) => a.time.compareTo(b.time));
+
+    reversedRatings = reversedRatings.reversed.toList();
 
     return Stack(
       children: [
@@ -25,23 +31,23 @@ class RatingsList extends StatelessWidget {
           controller: controller,
           itemBuilder: (context, index) {
             return Dismissible(
-              onDismissed: (direction) => onDismissed(re[index]),
-              key: Key(re[index].id),
+              onDismissed: (direction) => onDismissed(reversedRatings[index]),
+              key: Key(reversedRatings[index].id),
               child: RatingCard(
-                re[index],
+                reversedRatings[index],
               ),
             );
           },
           separatorBuilder: (context, index) => const Divider(),
-          itemCount: re.length,
+          itemCount: reversedRatings.length,
         ),
-        if (re.isEmpty)
+        if (reversedRatings.isEmpty)
           Center(
             child: Text(
               "No ratings yet...",
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-          )
+          ),
       ],
     );
   }

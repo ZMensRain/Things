@@ -67,8 +67,8 @@ class _ThingDetailScreenState extends ConsumerState<ThingDetailScreen> {
         Expanded(
           child: RatingsList(
             controller: c,
-            ratings,
-            (rating) {
+            ratings: ratings,
+            onDismissed: (rating) {
               ref
                   .read(ratingsProvider(widget.thing).notifier)
                   .removeRating(rating);
