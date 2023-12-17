@@ -54,15 +54,21 @@ class StatsTab extends StatelessWidget {
         "Average by Month",
         style: Theme.of(context).textTheme.headlineMedium,
       ),
-      ...a
-          .map(
-            (e) => MonthCard(
-              month: e.name[0].toUpperCase() + e.name.substring(1),
-              numberOfRatings: 0, //TODO workout numberOfRatings
-              average: 0, //TODO workout average
-            ),
-          )
-          .toList()
+      ...a.map((e) {
+        // Gets all ratings for this Thing that are in month [e]
+        var r = ratings.where(
+          (element) => element.time.month == Months.values.indexOf(e) + 1,
+        );
+        double average = r.fold(0.0,
+                (previousValue, element) => previousValue + element.value) /
+            r.length;
+
+        return MonthCard(
+          month: e.name[0].toUpperCase() + e.name.substring(1),
+          numberOfRatings: r.length,
+          average: average,
+        );
+      }).toList()
     ]);
   }
 }
