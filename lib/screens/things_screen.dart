@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rate_a_thing/providers/ratings_provider.dart';
-import 'package:rate_a_thing/providers/thing_provider.dart';
+import 'package:isar/isar.dart';
+import 'package:rate_a_thing/models/thing.dart';
 import 'package:rate_a_thing/screens/create_thing_screen.dart';
 import 'package:rate_a_thing/screens/thing_detail_screen.dart';
 import 'package:rate_a_thing/widgets/thing_card.dart';
 
-class ThingsScreen extends ConsumerWidget {
-  const ThingsScreen({super.key});
+class ThingsScreen extends StatelessWidget {
+  ThingsScreen({super.key});
+
+  final Isar isar = Isar.getInstance()!;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final things = ref.watch(thingsProvider);
+  Widget build(
+    BuildContext context,
+  ) {
+    Stream<void> t = isar.things.watchLazy();
 
     return Scaffold(
       appBar: AppBar(
@@ -31,31 +34,39 @@ class ThingsScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: things.isEmpty
-          ? Center(
+      body: StreamBuilder(
+        stream: t,
+        builder: (context, snapshot) {
+          var things = [];
+
+          isar.txnSync(() {
+            things = isar.things.where().findAllSync();
+          });
+          if (things.isEmpty) {
+            return Center(
               child: Text(
                 "Nothing here yet...",
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              itemCount: things.length,
-              itemBuilder: (context, index) => ThingCard(
-                things[index],
-                onTaped: () {
-                  ref
-                      .read(ratingsProvider(things[index]).notifier)
-                      .loadRatingsSQL();
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ThingDetailScreen(things[index]),
-                    ),
-                  );
-                },
-              ),
+            );
+          }
+          return ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            itemCount: things.length,
+            itemBuilder: (context, index) => ThingCard(
+              things[index],
+              onTaped: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ThingDetailScreen(things[index]),
+                  ),
+                );
+              },
             ),
+          );
+        },
+      ),
     );
   }
 }

@@ -17,13 +17,18 @@ const RatingSchema = CollectionSchema(
   name: r'Rating',
   id: 8466231695326758890,
   properties: {
-    r'time': PropertySchema(
+    r'thingId': PropertySchema(
       id: 0,
+      name: r'thingId',
+      type: IsarType.long,
+    ),
+    r'time': PropertySchema(
+      id: 1,
       name: r'time',
       type: IsarType.dateTime,
     ),
     r'value': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'value',
       type: IsarType.double,
     )
@@ -57,8 +62,9 @@ void _ratingSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeDateTime(offsets[0], object.time);
-  writer.writeDouble(offsets[1], object.value);
+  writer.writeLong(offsets[0], object.thingId);
+  writer.writeDateTime(offsets[1], object.time);
+  writer.writeDouble(offsets[2], object.value);
 }
 
 Rating _ratingDeserialize(
@@ -68,9 +74,11 @@ Rating _ratingDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Rating(
-    reader.readDateTime(offsets[0]),
-    reader.readDouble(offsets[1]),
+    reader.readDateTime(offsets[1]),
+    reader.readDouble(offsets[2]),
+    reader.readLong(offsets[0]),
   );
+  object.id = id;
   return object;
 }
 
@@ -82,8 +90,10 @@ P _ratingDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 1:
+      return (reader.readDateTime(offset)) as P;
+    case 2:
       return (reader.readDouble(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -91,14 +101,16 @@ P _ratingDeserializeProp<P>(
 }
 
 Id _ratingGetId(Rating object) {
-  return object.id;
+  return object.id ?? Isar.autoIncrement;
 }
 
 List<IsarLinkBase<dynamic>> _ratingGetLinks(Rating object) {
   return [];
 }
 
-void _ratingAttach(IsarCollection<dynamic> col, Id id, Rating object) {}
+void _ratingAttach(IsarCollection<dynamic> col, Id id, Rating object) {
+  object.id = id;
+}
 
 extension RatingQueryWhereSort on QueryBuilder<Rating, Rating, QWhere> {
   QueryBuilder<Rating, Rating, QAfterWhere> anyId() {
@@ -176,7 +188,23 @@ extension RatingQueryWhere on QueryBuilder<Rating, Rating, QWhereClause> {
 }
 
 extension RatingQueryFilter on QueryBuilder<Rating, Rating, QFilterCondition> {
-  QueryBuilder<Rating, Rating, QAfterFilterCondition> idEqualTo(Id value) {
+  QueryBuilder<Rating, Rating, QAfterFilterCondition> idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<Rating, Rating, QAfterFilterCondition> idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<Rating, Rating, QAfterFilterCondition> idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -186,7 +214,7 @@ extension RatingQueryFilter on QueryBuilder<Rating, Rating, QFilterCondition> {
   }
 
   QueryBuilder<Rating, Rating, QAfterFilterCondition> idGreaterThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -199,7 +227,7 @@ extension RatingQueryFilter on QueryBuilder<Rating, Rating, QFilterCondition> {
   }
 
   QueryBuilder<Rating, Rating, QAfterFilterCondition> idLessThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -212,14 +240,67 @@ extension RatingQueryFilter on QueryBuilder<Rating, Rating, QFilterCondition> {
   }
 
   QueryBuilder<Rating, Rating, QAfterFilterCondition> idBetween(
-    Id lower,
-    Id upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Rating, Rating, QAfterFilterCondition> thingIdEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'thingId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Rating, Rating, QAfterFilterCondition> thingIdGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'thingId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Rating, Rating, QAfterFilterCondition> thingIdLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'thingId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Rating, Rating, QAfterFilterCondition> thingIdBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'thingId',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -349,6 +430,18 @@ extension RatingQueryObject on QueryBuilder<Rating, Rating, QFilterCondition> {}
 extension RatingQueryLinks on QueryBuilder<Rating, Rating, QFilterCondition> {}
 
 extension RatingQuerySortBy on QueryBuilder<Rating, Rating, QSortBy> {
+  QueryBuilder<Rating, Rating, QAfterSortBy> sortByThingId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'thingId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Rating, Rating, QAfterSortBy> sortByThingIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'thingId', Sort.desc);
+    });
+  }
+
   QueryBuilder<Rating, Rating, QAfterSortBy> sortByTime() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'time', Sort.asc);
@@ -387,6 +480,18 @@ extension RatingQuerySortThenBy on QueryBuilder<Rating, Rating, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Rating, Rating, QAfterSortBy> thenByThingId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'thingId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Rating, Rating, QAfterSortBy> thenByThingIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'thingId', Sort.desc);
+    });
+  }
+
   QueryBuilder<Rating, Rating, QAfterSortBy> thenByTime() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'time', Sort.asc);
@@ -413,6 +518,12 @@ extension RatingQuerySortThenBy on QueryBuilder<Rating, Rating, QSortThenBy> {
 }
 
 extension RatingQueryWhereDistinct on QueryBuilder<Rating, Rating, QDistinct> {
+  QueryBuilder<Rating, Rating, QDistinct> distinctByThingId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'thingId');
+    });
+  }
+
   QueryBuilder<Rating, Rating, QDistinct> distinctByTime() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'time');
@@ -430,6 +541,12 @@ extension RatingQueryProperty on QueryBuilder<Rating, Rating, QQueryProperty> {
   QueryBuilder<Rating, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Rating, int, QQueryOperations> thingIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'thingId');
     });
   }
 

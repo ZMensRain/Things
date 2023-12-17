@@ -1,130 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:isar/isar.dart';
+
 import 'package:rate_a_thing/models/rating.dart';
 import 'package:rate_a_thing/models/thing.dart';
-import 'package:rate_a_thing/providers/ratings_provider.dart';
 import 'package:rate_a_thing/screens/edit_thing_screen.dart';
-import 'package:rate_a_thing/widgets/rate_card.dart';
-import 'package:rate_a_thing/widgets/ratings_list.dart';
-import 'package:rate_a_thing/widgets/stats/month_card.dart';
+import 'package:rate_a_thing/widgets/tabs/rating_tab.dart';
+import 'package:rate_a_thing/widgets/tabs/stats_tab.dart';
 
-class ThingDetailScreen extends ConsumerStatefulWidget {
+class ThingDetailScreen extends StatefulWidget {
   const ThingDetailScreen(this.thing, {super.key});
   final Thing thing;
   @override
-  ConsumerState<ThingDetailScreen> createState() => _ThingDetailScreenState();
+  State<ThingDetailScreen> createState() => _ThingDetailScreenState();
 }
 
-class _ThingDetailScreenState extends ConsumerState<ThingDetailScreen> {
+class _ThingDetailScreenState extends State<ThingDetailScreen> {
   var tab = 0;
 
-  final c = ScrollController();
+  late Isar isar;
+  late Stream<void> ratingsStream;
+  void rate(double rating) async {
+    await isar.writeTxn(
+      () => isar.ratings.put(
+        Rating(
+          DateTime.now(),
+          rating,
+          widget.thing.id,
+        ),
+      ),
+    );
+    await isar.writeTxn(
+      () async {
+        final ratings = await isar.ratings
+            .filter()
+            .thingIdEqualTo(widget.thing.id)
+            .findAll();
+        final double average = ratings.fold(0.0,
+                (previousValue, element) => previousValue + element.value) /
+            ratings.length;
 
-  void rate(double rating) {
-    ref
-        .read(ratingsProvider(widget.thing).notifier)
-        .addRating(Rating(DateTime.now(), rating));
-    c.animateTo(
-      0,
-      duration: const Duration(milliseconds: 280),
-      curve: Curves.ease,
+        isar.things.put(
+          widget.thing.copyWith(
+            average: double.parse(average.toStringAsFixed(1)),
+            lastTimeRated: DateTime.now(),
+          ),
+        );
+      },
     );
   }
 
-  Map<Months, bool> getMonths(List<Rating> ratings) {
-    Map<Months, bool> presnebtMonths = {
-      Months.january: false,
-      Months.february: false,
-      Months.march: false,
-      Months.april: false,
-      Months.may: false,
-      Months.june: false,
-      Months.july: false,
-      Months.august: false,
-      Months.september: false,
-      Months.october: false,
-      Months.november: false,
-      Months.december: false,
-    };
-
-    for (var rating in ratings) {
-      presnebtMonths[Months.values[rating.time.month - 1]] = true;
-    }
-    return presnebtMonths;
+  @override
+  void initState() {
+    super.initState();
+    isar = Isar.getInstance()!;
+    ratingsStream = isar.ratings.watchLazy();
   }
 
   @override
   Widget build(BuildContext context) {
-    var ratings = ref.watch(ratingsProvider(widget.thing));
-
-    Widget content = Column(
-      children: [
-        RateCard(
-          min: widget.thing.minRating,
-          max: widget.thing.maxRating,
-          onRate: rate,
-        ),
-        Expanded(
-          child: RatingsList(
-            controller: c,
-            ratings: ratings,
-            onDismissed: (rating) {
-              ref
-                  .read(ratingsProvider(widget.thing).notifier)
-                  .removeRating(rating);
-              ScaffoldMessenger.of(context).clearSnackBars();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text("Rating removed"),
-                  action: SnackBarAction(
-                      label: "undo",
-                      onPressed: () {
-                        ref
-                            .read(ratingsProvider(widget.thing).notifier)
-                            .addRating(rating);
-                      }),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-
-    //
-    //
-    if (tab == 1) {
-      var mon = getMonths(ratings);
-      mon.removeWhere((key, value) => value == false);
-      var a = mon.keys;
-      content = Column(children: [
-        const SizedBox(height: 10),
-        Text(
-          "Average by Month",
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        ...a
-            .map(
-              (e) => MonthCard(
-                month: e.name[0].toUpperCase() + e.name.substring(1),
-                numberOfRatings: ref
-                    .read(ratingsProvider(widget.thing).notifier)
-                    .monthRatings(e),
-                average: ref
-                        .read(ratingsProvider(widget.thing).notifier)
-                        .monthAverage(e) ??
-                    0,
-              ),
-            )
-            .toList()
-      ]);
-      if (a.isEmpty) {
-        content = const Center(
-          child: Text("Stats only show if you have rated this Thing."),
-        );
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -150,7 +83,38 @@ class _ThingDetailScreenState extends ConsumerState<ThingDetailScreen> {
           ),
         ],
       ),
-      body: content,
+      body: StreamBuilder(
+        stream: ratingsStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                snapshot.error.toString(),
+              ),
+            );
+          }
+
+          final List<Rating> ratings = isar.ratings
+              .filter()
+              .thingIdEqualTo(widget.thing.id)
+              .sortByTime()
+              .findAllSync();
+
+          if (tab == 0) {
+            return RatingTab(
+              thing: widget.thing,
+              onRate: rate,
+              ratings: ratings,
+            );
+          }
+          if (tab == 1) {
+            return StatsTab(ratings: ratings);
+          }
+          return const Center(
+            child: Text("Something went wrong..."),
+          );
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: tab,
         onTap: (value) => setState(() => tab = value),

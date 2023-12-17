@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:isar/isar.dart';
 import 'package:rate_a_thing/models/thing.dart';
-import 'package:rate_a_thing/providers/thing_provider.dart';
 
-class CreateThingScreen extends ConsumerStatefulWidget {
+class CreateThingScreen extends StatefulWidget {
   const CreateThingScreen({super.key});
 
   @override
-  ConsumerState<CreateThingScreen> createState() => _CreateThingScreenState();
+  State<CreateThingScreen> createState() => _CreateThingScreenState();
 }
 
-class _CreateThingScreenState extends ConsumerState<CreateThingScreen> {
+class _CreateThingScreenState extends State<CreateThingScreen> {
   Color _selectedColor = Colors.red;
 
   KFrequency _selectedFrequency = KFrequency.daily;
@@ -24,26 +23,34 @@ class _CreateThingScreenState extends ConsumerState<CreateThingScreen> {
   double _maxRating = 10;
 
   final _formKey = GlobalKey<FormState>();
+  late Isar isar;
 
-  void _createThing() {
+  @override
+  void initState() {
+    super.initState();
+    isar = Isar.getInstance()!;
+  }
+
+  void _createThing() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
     _formKey.currentState!.save();
-
-    ref.read(thingsProvider.notifier).createAThing(
-          Thing(
-            _enteredTitle,
-            average: null,
-            lastTimeRated: null,
-            colorValue: _selectedColor.value,
-            maxRating: _maxRating,
-            minRating: _minRating,
-            notifications: _sendNotifications,
-            notificationFrequency: _selectedFrequency,
-          ),
-        );
     Navigator.of(context).pop();
+    await isar.writeTxn(
+      () => isar.things.put(
+        Thing(
+          _enteredTitle,
+          average: null,
+          lastTimeRated: null,
+          colorValue: _selectedColor.value,
+          maxRating: _maxRating,
+          minRating: _minRating,
+          notifications: _sendNotifications,
+          notificationFrequency: _selectedFrequency,
+        ),
+      ),
+    );
   }
 
   @override

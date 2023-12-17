@@ -9,9 +9,11 @@ class Rating {
   Rating(
     this.time,
     this.value,
+    this.thingId,
   );
 
   final DateTime time;
   final double value;
-  final Id id = Isar.autoIncrement;
+  Id? id = Isar.autoIncrement;
+  final int thingId;
 }

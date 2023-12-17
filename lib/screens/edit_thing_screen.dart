@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:isar/isar.dart';
+import 'package:rate_a_thing/models/rating.dart';
 import 'package:rate_a_thing/models/thing.dart';
-import 'package:rate_a_thing/providers/ratings_provider.dart';
-import 'package:rate_a_thing/providers/thing_provider.dart';
+
 import 'package:rate_a_thing/screens/thing_detail_screen.dart';
 import 'package:rate_a_thing/widgets/delete_thing_dialog.dart';
 
-class EditThingScreen extends ConsumerStatefulWidget {
+class EditThingScreen extends StatefulWidget {
   const EditThingScreen(this.thing, {super.key});
   final Thing thing;
   @override
-  ConsumerState<EditThingScreen> createState() => _EditThingScreenState();
+  State<EditThingScreen> createState() => _EditThingScreenState();
 }
 
-class _EditThingScreenState extends ConsumerState<EditThingScreen> {
+class _EditThingScreenState extends State<EditThingScreen> {
   Color _selectedColor = Colors.red;
 
   KFrequency _selectedFrequency = KFrequency.daily;
@@ -24,15 +24,18 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
+  late Isar isar;
+
   @override
   void initState() {
     super.initState();
     _sendNotifications = widget.thing.notifications;
     _selectedFrequency = widget.thing.notificationFrequency;
     _selectedColor = Color(widget.thing.colorValue);
+    isar = Isar.getInstance()!;
   }
 
-  void _saveChanges() {
+  void _saveChanges() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -43,16 +46,24 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
       notificationFrequency: _selectedFrequency,
       notifications: _sendNotifications,
     );
-    ref.read(thingsProvider.notifier).editAThing(
-          widget.thing,
-          thing,
-        );
+
     Navigator.of(context).pop();
     Navigator.of(context).pop();
-    ref.read(ratingsProvider(thing).notifier).loadRatingsSQL();
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => ThingDetailScreen(thing),
-    ));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ThingDetailScreen(thing),
+      ),
+    );
+    await isar.writeTxn(
+      () => isar.things.put(
+        thing.copyWith(
+          colorValue: _selectedColor.value,
+          notificationFrequency: _selectedFrequency,
+          notifications: _sendNotifications,
+          title: _enteredTitle,
+        ),
+      ),
+    );
   }
 
   @override
@@ -149,14 +160,22 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
                 ElevatedButton(
                   onPressed: () => showDialog(
                     context: context,
-                    builder: (context) => DeleteThingDialog(() {
-                      ref
-                          .read(thingsProvider.notifier)
-                          .deleteAThing(widget.thing);
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                    }),
+                    builder: (context) => DeleteThingDialog(
+                      () async {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        await isar.writeTxn(
+                          () {
+                            isar.things.delete(widget.thing.id);
+                            return isar.ratings
+                                .filter()
+                                .thingIdEqualTo(widget.thing.id)
+                                .deleteAll();
+                          },
+                        );
+                      },
+                    ),
                   ),
                   child: Text(
                     "Delete",
