@@ -78,7 +78,7 @@ class _CreateThingScreenState extends State<CreateThingScreen> {
                 TextFormField(
                   decoration: const InputDecoration(
                     label: Text("Title"),
-                    hintText: "Leg Day",
+                    hintText: "💪 Arm Day",
                   ),
                   validator: titleValidator,
                   onSaved: (newValue) {
