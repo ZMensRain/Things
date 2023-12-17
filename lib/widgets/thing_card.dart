@@ -14,7 +14,7 @@ class ThingCard extends StatelessWidget {
       elevation: 5,
       margin: const EdgeInsets.all(6),
       clipBehavior: Clip.hardEdge,
-      color: thing.color,
+      color: Color(thing.colorValue),
       child: InkWell(
         onTap: onTaped,
         child: Padding(

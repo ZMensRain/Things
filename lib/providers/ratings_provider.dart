@@ -21,6 +21,7 @@ enum Months {
   december,
 }
 
+@Deprecated("Moving to isar")
 class RatingsNotifer extends StateNotifier<List<Rating>> {
   RatingsNotifer(this.thing, this.ref) : super([]);
 
@@ -36,7 +37,7 @@ class RatingsNotifer extends StateNotifier<List<Rating>> {
 
     state = data
         .map(
-          (row) => Rating.from(row),
+          (row) => Rating(DateTime.now(), 0),
         )
         .toList();
   }

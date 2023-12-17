@@ -36,7 +36,7 @@ class _CreateThingScreenState extends ConsumerState<CreateThingScreen> {
             _enteredTitle,
             average: null,
             lastTimeRated: null,
-            color: _selectedColor,
+            colorValue: _selectedColor.value,
             maxRating: _maxRating,
             minRating: _minRating,
             notifications: _sendNotifications,

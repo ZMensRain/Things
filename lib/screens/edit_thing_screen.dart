@@ -29,7 +29,7 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
     super.initState();
     _sendNotifications = widget.thing.notifications;
     _selectedFrequency = widget.thing.notificationFrequency;
-    _selectedColor = widget.thing.color;
+    _selectedColor = Color(widget.thing.colorValue);
   }
 
   void _saveChanges() {
@@ -38,7 +38,7 @@ class _EditThingScreenState extends ConsumerState<EditThingScreen> {
     }
     _formKey.currentState!.save();
     final thing = widget.thing.copyWith(
-      color: _selectedColor,
+      colorValue: _selectedColor.value,
       title: _enteredTitle,
       notificationFrequency: _selectedFrequency,
       notifications: _sendNotifications,

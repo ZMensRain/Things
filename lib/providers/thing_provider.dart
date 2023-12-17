@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rate_a_thing/models/thing.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqlite_api.dart';
 
+@Deprecated("Moving to isar")
 class ThingsNotifer extends StateNotifier<List<Thing>> {
   ThingsNotifer() : super([]);
 
@@ -32,7 +34,14 @@ class ThingsNotifer extends StateNotifier<List<Thing>> {
     }
 
     var data = await _database!.query("things");
-    var d = data.map((row) => Thing.from(row));
+    var d = data.map(
+      (row) => Thing(
+        "Temp crap",
+        colorValue: Colors.red.value,
+        average: null,
+        lastTimeRated: null,
+      ),
+    );
     state = d.toList();
   }
 
@@ -56,7 +65,7 @@ class ThingsNotifer extends StateNotifier<List<Thing>> {
         "maxRating": newThing.maxRating,
         "minRating": newThing.minRating,
         "notifications": newThing.notifications ? 1 : 0,
-        "color": newThing.color.value,
+        "color": newThing.colorValue,
       },
     );
 
@@ -83,7 +92,7 @@ class ThingsNotifer extends StateNotifier<List<Thing>> {
       await _openDatabase();
     }
     await _database!.execute(
-      "UPDATE things SET title='${neu.title}', notificationFrequency='${neu.notificationFrequency.name}', maxRating= ${neu.maxRating}, minRating=${neu.minRating}, notifications= ${neu.notifications ? 1 : 0}, average=${neu.average}, ${neu.lastTimeRated != null ? "lastTimeRated=${neu.lastTimeRated!.millisecondsSinceEpoch}," : ""} color=${neu.color.value} WHERE id='${old.id}'",
+      "UPDATE things SET title='${neu.title}', notificationFrequency='${neu.notificationFrequency.name}', maxRating= ${neu.maxRating}, minRating=${neu.minRating}, notifications= ${neu.notifications ? 1 : 0}, average=${neu.average}, ${neu.lastTimeRated != null ? "lastTimeRated=${neu.lastTimeRated!.millisecondsSinceEpoch}," : ""} color=${neu.colorValue} WHERE id='${old.id}'",
     );
     var i = state.indexWhere((element) => element.id == old.id);
     if (i + 1 == state.length) {

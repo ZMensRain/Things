@@ -131,7 +131,7 @@ class _ThingDetailScreenState extends ConsumerState<ThingDetailScreen> {
           color: Colors.white,
           onPressed: () => Navigator.of(context).pop(),
         ),
-        backgroundColor: widget.thing.color,
+        backgroundColor: Color(widget.thing.colorValue),
         foregroundColor: Colors.white,
         title: Text(
           widget.thing.title + (tab == 0 ? "" : " stats"),

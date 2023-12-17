@@ -32,7 +32,7 @@ class RatingsList extends StatelessWidget {
           itemBuilder: (context, index) {
             return Dismissible(
               onDismissed: (direction) => onDismissed(reversedRatings[index]),
-              key: Key(reversedRatings[index].id),
+              key: Key(reversedRatings[index].id.toString()),
               child: RatingCard(
                 reversedRatings[index],
               ),
