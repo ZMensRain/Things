@@ -29,11 +29,11 @@ class LocalNotificationService {
   }
 
   void _onDidReceiveLocalNotification(id, title, body, payload) {
-    print(id);
+    throw UnimplementedError();
   }
 
   void onInteractedWithNotification(NotificationResponse details) {
-    print(details.payload);
+    throw UnimplementedError();
   }
 
   Future<NotificationDetails> getNotificationDetails() async {

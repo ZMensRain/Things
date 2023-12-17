@@ -48,9 +48,11 @@ class ThingsScreen extends ConsumerWidget {
                   ref
                       .read(ratingsProvider(things[index]).notifier)
                       .loadRatingsSQL();
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ThingDetailScreen(things[index]),
-                  ));
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ThingDetailScreen(things[index]),
+                    ),
+                  );
                 },
               ),
             ),
