@@ -5,6 +5,8 @@ import 'package:rate_a_thing/models/thing.dart';
 import 'package:rate_a_thing/widgets/rate_card.dart';
 import 'package:rate_a_thing/widgets/ratings_list.dart';
 
+import 'package:rate_a_thing/helpers/isar_helper.dart' as isar_helper;
+
 class RatingTab extends StatefulWidget {
   const RatingTab({
     super.key,
@@ -32,7 +34,7 @@ class _RatingTabState extends State<RatingTab> {
   @override
   void initState() {
     super.initState();
-    isar = Isar.getInstance()!;
+    isar_helper.open().then((value) => isar = value);
   }
 
   @override
@@ -57,6 +59,7 @@ class _RatingTabState extends State<RatingTab> {
             ratings: widget.ratings,
             onDismissed: (rating) async {
               await isar.writeTxn(() => isar.ratings.delete(rating.id!));
+              isar_helper.updateStas(widget.thing);
               if (context.mounted) {
                 ScaffoldMessenger.of(context).clearSnackBars();
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -69,6 +72,8 @@ class _RatingTabState extends State<RatingTab> {
                         await isar.writeTxn(
                           () => isar.ratings.put(rating),
                         );
+
+                        isar_helper.updateStas(widget.thing);
                       },
                     ),
                   ),

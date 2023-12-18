@@ -127,6 +127,10 @@ class _ThingDetailScreenState extends State<ThingDetailScreen> {
             label: "Stats",
             icon: Icon(Icons.query_stats),
           ),
+          BottomNavigationBarItem(
+            label: "Graph",
+            icon: Icon(Icons.show_chart_rounded),
+          ),
         ],
       ),
     );

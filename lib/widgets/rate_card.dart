@@ -35,7 +35,7 @@ class _RateCardState extends State<RateCard> {
           },
           max: widget.max,
           min: widget.min,
-          divisions: 100,
+          divisions: ((widget.max - widget.min) * 10).toInt(),
           label: rating.toString(),
         ),
         ElevatedButton.icon(

@@ -71,6 +71,7 @@ class _CreateThingScreenState extends State<CreateThingScreen> {
           width: double.infinity,
           height: 500,
           child: Form(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             key: _formKey,
             child: Column(
               children: [
@@ -125,13 +126,21 @@ class _CreateThingScreenState extends State<CreateThingScreen> {
                               return "A number has to be entred";
                             }
                             if (double.parse(value) < 0) {
-                              return "Number must be >= 0";
+                              return "must be bigger than -1";
                             }
                             if (double.parse(value) > 100000) {
-                              return "number can't be bigger than 100,000";
+                              return "Can't be bigger than 100,000";
                             }
                             if (double.parse(value) > _maxRating) {
-                              return "The min rating must be lower than the max";
+                              return "Must be lower than the max";
+                            }
+
+                            if (double.parse(value)
+                                    .toString()
+                                    .split(".")[1]
+                                    .length >
+                                1) {
+                              return "Only one decimal place allowed";
                             }
                             return null;
                           },
@@ -158,14 +167,21 @@ class _CreateThingScreenState extends State<CreateThingScreen> {
                                 double.tryParse(value) == null) {
                               return "A number has to be entred";
                             }
-                            if (double.parse(value) < 0) {
-                              return "Number must be >= 0";
+                            if (double.parse(value) < 1) {
+                              return "Must be bigger than 0";
                             }
                             if (double.parse(value) > 100000) {
-                              return "number can't be bigger than 100,000";
+                              return "Can't be bigger than 100,000";
                             }
                             if (double.parse(value) < _minRating) {
-                              return "The max rating must be bigger than the min";
+                              return "Must be bigger than the min";
+                            }
+                            if (double.parse(value)
+                                    .toString()
+                                    .split(".")[1]
+                                    .length >
+                                1) {
+                              return "Only one decimal place allowed";
                             }
                             return null;
                           },
@@ -223,7 +239,7 @@ class _CreateThingScreenState extends State<CreateThingScreen> {
                           .toList(),
                     ),
                   ),
-                const Spacer(flex: 3)
+                const Spacer()
               ],
             ),
           ),

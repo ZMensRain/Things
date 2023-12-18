@@ -46,7 +46,10 @@ class ThingCard extends StatelessWidget {
                 ),
               ),
               Text(
-                "${thing.average ?? ""}".replaceAll(".0", ""),
+                thing.average != null
+                    ? "${thing.average} / ${thing.maxRating}"
+                        .replaceAll(".0", "")
+                    : "",
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
                       color: Colors.white.withOpacity(0.99),
                     ),
