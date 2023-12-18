@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
+import 'package:rate_a_thing/helpers/isar_helper.dart' as isar_helper;
 import 'package:rate_a_thing/models/thing.dart';
 
 class CreateThingScreen extends StatefulWidget {
@@ -28,7 +29,7 @@ class _CreateThingScreenState extends State<CreateThingScreen> {
   @override
   void initState() {
     super.initState();
-    isar = Isar.getInstance()!;
+    isar_helper.open().then((value) => isar = value);
   }
 
   void _createThing() async {

@@ -4,6 +4,7 @@ import 'package:isar/isar.dart';
 import 'package:rate_a_thing/models/rating.dart';
 import 'package:rate_a_thing/models/thing.dart';
 import 'package:rate_a_thing/screens/edit_thing_screen.dart';
+import 'package:rate_a_thing/widgets/tabs/graph.dart';
 import 'package:rate_a_thing/widgets/tabs/rating_tab.dart';
 import 'package:rate_a_thing/widgets/tabs/stats_tab.dart';
 
@@ -109,6 +110,9 @@ class _ThingDetailScreenState extends State<ThingDetailScreen> {
           }
           if (tab == 1) {
             return StatsTab(ratings: ratings);
+          }
+          if (tab == 2) {
+            return const GraphTab();
           }
           return const Center(
             child: Text("Something went wrong..."),

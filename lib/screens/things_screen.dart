@@ -3,7 +3,7 @@ import 'package:isar/isar.dart';
 import 'package:rate_a_thing/models/thing.dart';
 import 'package:rate_a_thing/screens/create_thing_screen.dart';
 import 'package:rate_a_thing/screens/thing_detail_screen.dart';
-import 'package:rate_a_thing/widgets/thing_card.dart';
+import 'package:rate_a_thing/widgets/things/thing_card.dart';
 
 class ThingsScreen extends StatelessWidget {
   ThingsScreen({super.key});
