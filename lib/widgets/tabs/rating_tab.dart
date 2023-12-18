@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:rate_a_thing/models/rating.dart';
 import 'package:rate_a_thing/models/thing.dart';
-import 'package:rate_a_thing/widgets/rate_card.dart';
-import 'package:rate_a_thing/widgets/ratings_list.dart';
+import 'package:rate_a_thing/widgets/ratings/rate_card.dart';
 
 import 'package:rate_a_thing/helpers/isar_helper.dart' as isar_helper;
+import 'package:rate_a_thing/widgets/ratings/ratings_list.dart';
 
 class RatingTab extends StatefulWidget {
   const RatingTab({

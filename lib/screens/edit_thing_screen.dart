@@ -4,7 +4,7 @@ import 'package:rate_a_thing/models/rating.dart';
 import 'package:rate_a_thing/models/thing.dart';
 
 import 'package:rate_a_thing/screens/thing_detail_screen.dart';
-import 'package:rate_a_thing/widgets/delete_thing_dialog.dart';
+import 'package:rate_a_thing/widgets/ratings/delete_thing_dialog.dart';
 
 class EditThingScreen extends StatefulWidget {
   const EditThingScreen(this.thing, {super.key});

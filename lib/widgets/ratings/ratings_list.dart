@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rate_a_thing/models/rating.dart';
-
-import 'package:rate_a_thing/widgets/rating_tile.dart';
+import 'package:rate_a_thing/widgets/ratings/rating_tile.dart';
 
 /// displays the ratings given to a [Thing]
 /// or the message No ratings yet... if there are no [Rating]s
