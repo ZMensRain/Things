@@ -1,4 +1,5 @@
 import 'package:date_format/date_format.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class GraphTab extends StatefulWidget {
@@ -47,11 +48,13 @@ class _GraphTabState extends State<GraphTab> {
           ),
           style: Theme.of(context).textTheme.headlineLarge,
         ),
-        const Padding(
-          padding: EdgeInsets.all(12.0),
+        Padding(
+          padding: const EdgeInsets.all(12.0),
           child: AspectRatio(
             aspectRatio: 1,
-            child: Placeholder(),
+            child: BarChart(
+              BarChartData(),
+            ),
           ),
         ),
         ToggleButtons(
