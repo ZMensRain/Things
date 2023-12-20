@@ -52,29 +52,32 @@ class StatsTab extends StatelessWidget {
         ? const Center(
             child: Text("Stats only show after rating this Thing"),
           )
-        : Column(children: [
-            const SizedBox(height: 10),
-            Text(
-              "Average by Month",
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            ...a.map((e) {
-              // Gets all ratings for this Thing that are in month [e]
-              var r = ratings.where(
-                (element) => element.time.month == Months.values.indexOf(e) + 1,
-              );
-              double average = r.fold(
-                      0.0,
-                      (previousValue, element) =>
-                          previousValue + element.value) /
-                  r.length;
+        : SingleChildScrollView(
+            child: Column(children: [
+              const SizedBox(height: 10),
+              Text(
+                "Average by Month",
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              ...a.map((e) {
+                // Gets all ratings for this Thing that are in month [e]
+                var r = ratings.where(
+                  (element) =>
+                      element.time.month == Months.values.indexOf(e) + 1,
+                );
+                double average = r.fold(
+                        0.0,
+                        (previousValue, element) =>
+                            previousValue + element.value) /
+                    r.length;
 
-              return MonthCard(
-                month: e.name[0].toUpperCase() + e.name.substring(1),
-                numberOfRatings: r.length,
-                average: average,
-              );
-            }).toList()
-          ]);
+                return MonthCard(
+                  month: e.name[0].toUpperCase() + e.name.substring(1),
+                  numberOfRatings: r.length,
+                  average: average,
+                );
+              }).toList()
+            ]),
+          );
   }
 }

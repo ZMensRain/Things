@@ -112,7 +112,7 @@ class _ThingDetailScreenState extends State<ThingDetailScreen> {
             return StatsTab(ratings: ratings);
           }
           if (tab == 2) {
-            return const GraphTab();
+            return GraphTab(thing: widget.thing);
           }
           return const Center(
             child: Text("Something went wrong..."),
