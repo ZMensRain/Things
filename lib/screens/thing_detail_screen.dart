@@ -3,10 +3,14 @@ import 'package:isar/isar.dart';
 
 import 'package:rate_a_thing/models/rating.dart';
 import 'package:rate_a_thing/models/thing.dart';
-import 'package:rate_a_thing/screens/edit_thing_screen.dart';
+
+// Tabs
 import 'package:rate_a_thing/widgets/tabs/graph.dart';
 import 'package:rate_a_thing/widgets/tabs/rating_tab.dart';
 import 'package:rate_a_thing/widgets/tabs/stats_tab.dart';
+
+// Screens
+import 'package:rate_a_thing/screens/edit_thing_screen.dart';
 
 class ThingDetailScreen extends StatefulWidget {
   const ThingDetailScreen(this.thing, {super.key});
@@ -20,6 +24,10 @@ class _ThingDetailScreenState extends State<ThingDetailScreen> {
 
   late Isar isar;
   late Stream<void> ratingsStream;
+
+  /// Adds a [Rating] to the current [Thing]
+  ///
+  /// After adding a [Rating] it updates the stats for the [Thing]
   void rate(double rating) async {
     await isar.writeTxn(
       () => isar.ratings.put(
@@ -36,9 +44,9 @@ class _ThingDetailScreenState extends State<ThingDetailScreen> {
             .filter()
             .thingIdEqualTo(widget.thing.id)
             .findAll();
-        final double average = ratings.fold(0.0,
-                (previousValue, element) => previousValue + element.value) /
-            ratings.length;
+        final double average =
+            ratings.fold(0.0, (value, rating) => value + rating.value) /
+                ratings.length;
 
         isar.things.put(
           widget.thing.copyWith(
@@ -73,7 +81,8 @@ class _ThingDetailScreenState extends State<ThingDetailScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.of(context).push(
+              Navigator.push(
+                context,
                 MaterialPageRoute(
                   builder: (context) => EditThingScreen(widget.thing),
                 ),
@@ -101,22 +110,26 @@ class _ThingDetailScreenState extends State<ThingDetailScreen> {
               .sortByTime()
               .findAllSync();
 
-          if (tab == 0) {
-            return RatingTab(
-              thing: widget.thing,
-              onRate: rate,
-              ratings: ratings,
-            );
+          // Returns the selected tab or an error if the tab is not in the options
+          switch (tab) {
+            case 0:
+              return RatingTab(
+                thing: widget.thing,
+                onRate: rate,
+                ratings: ratings,
+              );
+
+            case 1:
+              return StatsTab(ratings: ratings);
+
+            case 2:
+              return GraphTab(thing: widget.thing);
+
+            default:
+              return const Center(
+                child: Text("Something went wrong..."),
+              );
           }
-          if (tab == 1) {
-            return StatsTab(ratings: ratings);
-          }
-          if (tab == 2) {
-            return GraphTab(thing: widget.thing);
-          }
-          return const Center(
-            child: Text("Something went wrong..."),
-          );
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
