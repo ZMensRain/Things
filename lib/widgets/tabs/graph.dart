@@ -52,6 +52,22 @@ class _GraphTabState extends State<GraphTab> {
   }
 
   void _updateCanMove() {
+    if (_selectedButtons[0]) {
+      setState(() {
+        if (earlistDate == null || latestDate == null) {
+          _canMoveLeft = false;
+          _canMoveRight = false;
+        }
+        final earlistWeek =
+            earlistDate!.add(-Duration(days: earlistDate!.weekday - 1));
+        final latestWeek =
+            latestDate!.add(-Duration(days: latestDate!.weekday - 1));
+        _canMoveLeft =
+            !(date.year == earlistWeek.year && date.day == earlistWeek.day);
+        _canMoveRight =
+            !(date.year == latestWeek.year && date.day == latestWeek.day);
+      });
+    }
     if (_selectedButtons[1]) {
       setState(
         () {
@@ -73,7 +89,13 @@ class _GraphTabState extends State<GraphTab> {
   }
 
   void _moveView(bool left) {
-    if (_selectedButtons[0]) {}
+    if (_selectedButtons[0]) {
+      if (left) {
+        date = date.add(-const Duration(days: 7));
+      } else {
+        date = date.add(const Duration(days: 7));
+      }
+    }
     if (_selectedButtons[1]) {
       if (left) {
         if (date.month == 1) {
@@ -102,6 +124,35 @@ class _GraphTabState extends State<GraphTab> {
 
   void _getGraphData() async {
     List<FlSpot> points = [];
+    if (_selectedButtons[0]) {
+      date = date.add(-Duration(days: date.weekday - 1));
+      final weekRatings = await isar.ratings
+          .filter()
+          .thingIdEqualTo(widget.thing.id)
+          .timeBetween(
+            date,
+            date.add(
+              const Duration(days: 7),
+            ),
+          )
+          .findAll();
+
+      for (var i = 1; i <= 7; i++) {
+        var dayRatings =
+            weekRatings.where((element) => element.time.weekday == i);
+        if (dayRatings.isEmpty) {
+          points.add(FlSpot(i - 1, 0));
+        } else {
+          points.add(
+            FlSpot(
+              i - 1,
+              dayRatings.fold(0.0, (pv, rating) => pv + rating.value) /
+                  dayRatings.length,
+            ),
+          );
+        }
+      }
+    }
     if (_selectedButtons[1]) {
       // Gets all ratings for the current month
       final monthRatings = await isar.ratings
@@ -178,10 +229,7 @@ class _GraphTabState extends State<GraphTab> {
       children: [
         const SizedBox(height: 10),
         Text(
-          formatDate(
-            date,
-            _getDateFormats(),
-          ),
+          formatDate(date, _getDateFormats()),
           style: Theme.of(context).textTheme.headlineLarge,
         ),
         AspectRatio(
@@ -195,7 +243,8 @@ class _GraphTabState extends State<GraphTab> {
                   dotData: const FlDotData(
                     show: false,
                   ),
-                  barWidth: 2,
+                  barWidth: 2.5,
+                  color: Theme.of(context).colorScheme.primary,
                   spots: data,
                 ),
               ],
