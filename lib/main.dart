@@ -6,13 +6,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:rate_a_thing/models/rating.dart';
 import 'package:rate_a_thing/models/thing.dart';
 import 'package:rate_a_thing/screens/things_screen.dart';
-import 'package:rate_a_thing/services/notification_service.dart';
-
-final service = LocalNotificationService();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await service.init();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
