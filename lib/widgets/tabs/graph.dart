@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:date_format/date_format.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +54,12 @@ class _GraphTabState extends State<GraphTab> {
   }
 
   void _updateCanMove() {
+    if (earlistDate == null) {
+      _canMoveLeft = false;
+      _canMoveRight = false;
+      return;
+    }
+
     if (_selectedButtons[0]) {
       setState(() {
         if (earlistDate == null || latestDate == null) {
@@ -236,6 +244,14 @@ class _GraphTabState extends State<GraphTab> {
           aspectRatio: 1,
           child: LineChart(
             LineChartData(
+              titlesData: FlTitlesData(
+                rightTitles: AxisTitles(
+                  axisNameWidget: Expanded(
+                    child: Container(),
+                  ),
+                ),
+                topTitles: const AxisTitles(),
+              ),
               maxY: widget.thing.maxRating,
               minY: widget.thing.minRating,
               lineBarsData: [
@@ -305,26 +321,26 @@ class _GraphTabState extends State<GraphTab> {
             ),
           ],
         ),
-        // ElevatedButton(
-        //   onPressed: () async {
-        //     var dateA = DateTime(2023, 1, 1);
-        //     var i = 1;
-        //     Random random = Random();
-        //     while (i != 365 * 8) {
-        //       var value = random.nextInt(10);
-        //       await isar.writeTxn(
-        //         () => isar.ratings.put(
-        //           Rating(dateA, value.toDouble(), 1),
-        //         ),
-        //       );
-        //       dateA = dateA.add(
-        //         const Duration(days: 1),
-        //       );
-        //       i += 1;
-        //     }
-        //   },
-        //   child: const Text("Generate"),
-        // ),
+        ElevatedButton(
+          onPressed: () async {
+            var dateA = DateTime(2023, 1, 1);
+            var i = 1;
+            Random random = Random();
+            while (i != 365 * 8) {
+              var value = random.nextInt(10);
+              await isar.writeTxn(
+                () => isar.ratings.put(
+                  Rating(dateA, value.toDouble(), widget.thing.id),
+                ),
+              );
+              dateA = dateA.add(
+                const Duration(days: 1),
+              );
+              i += 1;
+            }
+          },
+          child: const Text("Generate"),
+        ),
       ],
     );
   }

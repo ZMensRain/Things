@@ -65,12 +65,14 @@ class _CreateThingScreenState extends State<CreateThingScreen> {
     int id = await isar.writeTxn(
       () => isar.things.put(thing),
     );
-    registerBackgroundTask(
-      date!.copyWith(hour: time!.hour, minute: time!.hour),
-      _selectedFrequency,
-      thing.title,
-      id,
-    );
+    if (_sendNotifications) {
+      registerBackgroundTask(
+        date!.copyWith(hour: time!.hour, minute: time!.hour),
+        _selectedFrequency,
+        thing.title,
+        id,
+      );
+    }
   }
 
   @override

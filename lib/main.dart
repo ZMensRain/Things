@@ -30,8 +30,20 @@ void main() async {
     MaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true),
-      darkTheme: ThemeData.dark(useMaterial3: true),
+      theme: ThemeData.from(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 4, 0, 255),
+        ),
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData.from(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 4, 0, 255),
+          brightness: Brightness.dark,
+          background: const Color.fromARGB(255, 10, 10, 10),
+        ),
+        useMaterial3: true,
+      ),
       home: const MainApp(),
     ),
   );
