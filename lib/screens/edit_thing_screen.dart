@@ -181,6 +181,32 @@ class _EditThingScreenState extends State<EditThingScreen> {
                           .toList(),
                     ),
                   ),
+                // Notification starting date and time
+                if (_sendNotifications)
+                  Row(
+                    children: [
+                      IconButton(
+                          onPressed: () async {
+                            date = await showDatePicker(
+                              context: context,
+                              firstDate: DateTime.fromMillisecondsSinceEpoch(0),
+                              lastDate: DateTime.now().add(
+                                const Duration(days: 365 * 2),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.calendar_month)),
+                      IconButton(
+                        onPressed: () async {
+                          time = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+                        },
+                        icon: const Icon(Icons.alarm),
+                      ),
+                    ],
+                  ),
 
                 ElevatedButton(
                   onPressed: () => showDialog(
