@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 
-import 'package:rate_a_thing/models/rating.dart';
-import 'package:rate_a_thing/models/thing.dart';
+import 'package:things/models/rating.dart';
+import 'package:things/models/thing.dart';
 
 // Tabs
-import 'package:rate_a_thing/widgets/tabs/graph.dart';
-import 'package:rate_a_thing/widgets/tabs/rating_tab.dart';
-import 'package:rate_a_thing/widgets/tabs/stats_tab.dart';
+import 'package:things/widgets/tabs/graph.dart';
+import 'package:things/widgets/tabs/rating_tab.dart';
+import 'package:things/widgets/tabs/stats_tab.dart';
 
 // Screens
-import 'package:rate_a_thing/screens/edit_thing_screen.dart';
+import 'package:things/screens/edit_thing_screen.dart';
 
 class ThingDetailScreen extends StatefulWidget {
   const ThingDetailScreen(this.thing, {super.key});

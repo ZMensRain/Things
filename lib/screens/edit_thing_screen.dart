@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
-import 'package:rate_a_thing/helpers/background_task.dart';
-import 'package:rate_a_thing/models/rating.dart';
-import 'package:rate_a_thing/models/thing.dart';
+import 'package:things/helpers/background_task.dart';
+import 'package:things/models/rating.dart';
+import 'package:things/models/thing.dart';
 
-import 'package:rate_a_thing/screens/thing_detail_screen.dart';
-import 'package:rate_a_thing/widgets/ratings/delete_thing_dialog.dart';
+import 'package:things/screens/thing_detail_screen.dart';
+import 'package:things/widgets/ratings/delete_thing_dialog.dart';
 
 class EditThingScreen extends StatefulWidget {
   const EditThingScreen(this.thing, {super.key});

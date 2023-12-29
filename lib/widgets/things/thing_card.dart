@@ -1,6 +1,6 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
-import 'package:rate_a_thing/models/thing.dart';
+import 'package:things/models/thing.dart';
 
 class ThingCard extends StatelessWidget {
   const ThingCard(this.thing, {super.key, required this.onTaped});

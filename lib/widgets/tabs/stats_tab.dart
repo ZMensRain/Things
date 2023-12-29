@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rate_a_thing/models/rating.dart';
-import 'package:rate_a_thing/widgets/stats/month_card.dart';
+import 'package:things/models/rating.dart';
+import 'package:things/widgets/stats/month_card.dart';
 
 enum Months {
   january,

@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:rate_a_thing/helpers/isar_helper.dart' as isar_helper;
-import 'package:rate_a_thing/helpers/notifications.dart';
+import 'package:things/helpers/isar_helper.dart' as isar_helper;
+import 'package:things/helpers/notifications.dart';
 
-import 'package:rate_a_thing/models/rating.dart';
-import 'package:rate_a_thing/models/thing.dart';
-import 'package:rate_a_thing/screens/thing_detail_screen.dart';
-import 'package:rate_a_thing/screens/things_screen.dart';
+import 'package:things/models/rating.dart';
+import 'package:things/models/thing.dart';
+import 'package:things/screens/thing_detail_screen.dart';
+import 'package:things/screens/things_screen.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 

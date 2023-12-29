@@ -1,7 +1,7 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:rate_a_thing/models/rating.dart';
-import 'package:rate_a_thing/models/thing.dart';
+import 'package:things/models/rating.dart';
+import 'package:things/models/thing.dart';
 
 Future<Isar> open() async {
   var path = (await getApplicationDocumentsDirectory()).path;

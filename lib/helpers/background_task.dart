@@ -1,5 +1,5 @@
-import 'package:rate_a_thing/helpers/notifications.dart';
-import 'package:rate_a_thing/models/thing.dart';
+import 'package:things/helpers/notifications.dart';
+import 'package:things/models/thing.dart';
 import 'package:workmanager/workmanager.dart';
 
 void _callbackDispatcher() {

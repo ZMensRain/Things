@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:isar/isar.dart';
-import 'package:rate_a_thing/helpers/isar_helper.dart' as isar_helper;
-import 'package:rate_a_thing/main.dart';
-import 'package:rate_a_thing/models/thing.dart';
-import 'package:rate_a_thing/screens/thing_detail_screen.dart';
+import 'package:things/helpers/isar_helper.dart' as isar_helper;
+import 'package:things/main.dart';
+import 'package:things/models/thing.dart';
+import 'package:things/screens/thing_detail_screen.dart';
 
 class LocalNotificationService {
   // Instance of Flutternotification plugin

@@ -1,6 +1,6 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
-import 'package:rate_a_thing/models/rating.dart';
+import 'package:things/models/rating.dart';
 
 class RatingTile extends StatelessWidget {
   const RatingTile(this.rating, {super.key});

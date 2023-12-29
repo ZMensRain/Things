@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
-import 'package:rate_a_thing/helpers/background_task.dart';
-import 'package:rate_a_thing/helpers/isar_helper.dart' as isar_helper;
-import 'package:rate_a_thing/models/thing.dart';
+import 'package:things/helpers/background_task.dart';
+import 'package:things/helpers/isar_helper.dart' as isar_helper;
+import 'package:things/models/thing.dart';
 
 class CreateThingScreen extends StatefulWidget {
   const CreateThingScreen({super.key});

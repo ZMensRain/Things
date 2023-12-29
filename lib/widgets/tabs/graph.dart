@@ -2,9 +2,9 @@ import 'package:date_format/date_format.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
-import 'package:rate_a_thing/helpers/isar_helper.dart' as isar_helper;
-import 'package:rate_a_thing/models/rating.dart';
-import 'package:rate_a_thing/models/thing.dart';
+import 'package:things/helpers/isar_helper.dart' as isar_helper;
+import 'package:things/models/rating.dart';
+import 'package:things/models/thing.dart';
 
 class GraphTab extends StatefulWidget {
   const GraphTab({super.key, required this.thing});
