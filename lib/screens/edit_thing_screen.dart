@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
+import 'package:rate_a_thing/helpers/background_task.dart';
 import 'package:rate_a_thing/models/rating.dart';
 import 'package:rate_a_thing/models/thing.dart';
 
@@ -22,6 +23,10 @@ class _EditThingScreenState extends State<EditThingScreen> {
 
   bool _sendNotifications = false;
 
+  DateTime? date;
+
+  TimeOfDay? time;
+
   final _formKey = GlobalKey<FormState>();
 
   late Isar isar;
@@ -40,6 +45,25 @@ class _EditThingScreenState extends State<EditThingScreen> {
       return;
     }
     _formKey.currentState!.save();
+    cancleTask(widget.thing.id);
+
+    if (_sendNotifications) {
+      if (date == null || time == null) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Time and date must be set.")));
+        return;
+      }
+      registerBackgroundTask(
+          date!.copyWith(
+            hour: time!.hour,
+            minute: time!.minute,
+          ),
+          _selectedFrequency,
+          _enteredTitle,
+          widget.thing.id);
+    }
+
     final thing = widget.thing.copyWith(
       colorValue: _selectedColor.value,
       title: _enteredTitle,
@@ -47,9 +71,10 @@ class _EditThingScreenState extends State<EditThingScreen> {
       notifications: _sendNotifications,
     );
 
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
-    Navigator.of(context).push(
+    Navigator.pop(context);
+    Navigator.pop(context);
+    Navigator.push(
+      context,
       MaterialPageRoute(
         builder: (context) => ThingDetailScreen(thing),
       ),

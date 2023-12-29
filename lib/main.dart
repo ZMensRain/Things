@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:rate_a_thing/helpers/isar_helper.dart' as isar_helper;
+import 'package:rate_a_thing/helpers/notifications.dart';
 
 import 'package:rate_a_thing/models/rating.dart';
 import 'package:rate_a_thing/models/thing.dart';
+import 'package:rate_a_thing/screens/thing_detail_screen.dart';
 import 'package:rate_a_thing/screens/things_screen.dart';
+
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,22 +27,40 @@ void main() async {
   );
 
   runApp(
-    const MainApp(),
+    MaterialApp(
+      navigatorKey: navigatorKey,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      darkTheme: ThemeData.dark(useMaterial3: true),
+      home: const MainApp(),
+    ),
   );
 }
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
+  void checkIfNotificationLaunched() async {
+    var a = await LocalNotificationService.dets();
+
+    if (a.didNotificationLaunchApp) {
+      int id = int.parse(a.notificationResponse!.payload!);
+      final isar = await isar_helper.open();
+      final thing = await isar.things.filter().idEqualTo(id).findFirst();
+      navigatorKey.currentState!.push(
+        MaterialPageRoute(
+          builder: (context) => ThingDetailScreen(
+            thing!,
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(
     BuildContext context,
   ) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true),
-      darkTheme: ThemeData.dark(useMaterial3: true),
-      home: ThingsScreen(),
-    );
+    checkIfNotificationLaunched();
+    return ThingsScreen();
   }
 }

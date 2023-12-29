@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
+import 'package:rate_a_thing/helpers/background_task.dart';
 import 'package:rate_a_thing/helpers/isar_helper.dart' as isar_helper;
 import 'package:rate_a_thing/models/thing.dart';
 
@@ -23,6 +24,10 @@ class _CreateThingScreenState extends State<CreateThingScreen> {
 
   double _maxRating = 10;
 
+  DateTime? date;
+
+  TimeOfDay? time;
+
   final _formKey = GlobalKey<FormState>();
   late Isar isar;
 
@@ -37,20 +42,34 @@ class _CreateThingScreenState extends State<CreateThingScreen> {
       return;
     }
     _formKey.currentState!.save();
+
+    if (_sendNotifications && (date == null || time == null)) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Time and date must be set.")));
+      return;
+    }
+
+    final Thing thing = Thing(
+      _enteredTitle,
+      average: null,
+      lastTimeRated: null,
+      colorValue: _selectedColor.value,
+      maxRating: _maxRating,
+      minRating: _minRating,
+      notifications: _sendNotifications,
+      notificationFrequency: _selectedFrequency,
+    );
+
     Navigator.of(context).pop();
-    await isar.writeTxn(
-      () => isar.things.put(
-        Thing(
-          _enteredTitle,
-          average: null,
-          lastTimeRated: null,
-          colorValue: _selectedColor.value,
-          maxRating: _maxRating,
-          minRating: _minRating,
-          notifications: _sendNotifications,
-          notificationFrequency: _selectedFrequency,
-        ),
-      ),
+    int id = await isar.writeTxn(
+      () => isar.things.put(thing),
+    );
+    registerBackgroundTask(
+      date!.copyWith(hour: time!.hour, minute: time!.hour),
+      _selectedFrequency,
+      thing.title,
+      id,
     );
   }
 
@@ -240,6 +259,33 @@ class _CreateThingScreenState extends State<CreateThingScreen> {
                           .toList(),
                     ),
                   ),
+                // Notification starting date and time
+                if (_sendNotifications)
+                  Row(
+                    children: [
+                      IconButton(
+                          onPressed: () async {
+                            date = await showDatePicker(
+                              context: context,
+                              firstDate: DateTime.fromMillisecondsSinceEpoch(0),
+                              lastDate: DateTime.now().add(
+                                const Duration(days: 365 * 2),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.calendar_month)),
+                      IconButton(
+                        onPressed: () async {
+                          time = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+                        },
+                        icon: const Icon(Icons.alarm),
+                      ),
+                    ],
+                  ),
+
                 const Spacer()
               ],
             ),
